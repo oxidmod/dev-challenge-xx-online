@@ -64,6 +64,7 @@ services:
 
   OpenSwoole\Core\Psr\Middleware\StackHandler:
     arguments:
+      - '@App\Presentation\Http\Middlewares\ErrorHandlerMiddleware'
       - '@App\Presentation\Http\Middlewares\ParseJsonMiddleware'
       - '@App\Presentation\Http\Middlewares\RoutingMiddleware'
 
