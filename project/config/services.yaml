@@ -37,17 +37,34 @@ services:
   App\:
     resource: '../src/*'
 
+  App\Presentation\Http\Controllers\:
+    resource: '../src/Presentation/Http/Controllers/'
+    public: true
+
   # This service is retrieved from container directly and must be public
   App\Application:
     public: true
 
+  App\DependencyInjection\Factories\RouterFactory:
+    arguments:
+      $container: '@service_container'
+      $projectRootPath: '%app.project_dir%'
+      $isDebugEnabled: '%app.debug%'
+
   # 3rd-party services
+  FastRoute\Dispatcher:
+    factory: [ '@App\DependencyInjection\Factories\RouterFactory', 'create' ]
+
   Psr\Log\LoggerInterface:
     factory: [ '@App\DependencyInjection\Factories\LoggerFactory', 'create' ]
     arguments:
       - '%app.name%'
       - '%logger.stream%'
       - '%logger.level%'
+
+  OpenSwoole\Core\Psr\Middleware\StackHandler:
+    arguments:
+      - '@App\Presentation\Http\Middlewares\RoutingMiddleware'
 
   OpenSwoole\Http\Server:
     arguments:
