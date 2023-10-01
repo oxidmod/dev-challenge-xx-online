@@ -19,7 +19,13 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^8.1",
-    "ext-openswoole": "^22.0"
+    "ext-openswoole": "^22.0",
+    "monolog/monolog": "^3.4",
+    "psr/log": "^3.0",
+    "symfony/config": "^6.3",
+    "symfony/dependency-injection": "^6.3",
+    "symfony/yaml": "^6.3",
+    "vlucas/phpdotenv": "^5.5"
   },
   "require-dev": {
     "openswoole/ide-helper": "^22.0"

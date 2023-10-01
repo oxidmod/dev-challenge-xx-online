@@ -42,15 +42,14 @@ services:
     public: true
 
   # 3rd-party services
-#  Psr\Log\LoggerInterface:
-#    factory: [ '@App\DependencyInjection\Factories\LoggerFactory', 'create' ]
-#    arguments:
-#      - '%app.name%'
-#      - '%logger.stream%'
-#      - '%logger.level%'
+  Psr\Log\LoggerInterface:
+    factory: [ '@App\DependencyInjection\Factories\LoggerFactory', 'create' ]
+    arguments:
+      - '%app.name%'
+      - '%logger.stream%'
+      - '%logger.level%'
 
-  Swoole\Server:
-    class: Swoole\Http\Server
+  OpenSwoole\Http\Server:
     arguments:
       - '%swoole.host%'
       - '%swoole.port%'
