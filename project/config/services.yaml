@@ -1,0 +1,58 @@
+parameters:
+  app.env: '%env(string:APP_ENV)%'
+  app.debug: '%env(bool:APP_DEBUG)%'
+  app.name: '%env(string:APP_NAME)%'
+
+  logger.stream: '%env(string:LOGGER_STREAM)%'
+  logger.level: '%env(int:LOGGER_LEVEL)%'
+
+  swoole.host: '%env(string:SWOOLE_SERVER_HOST)%'
+  swoole.port: '%env(int:SWOOLE_SERVER_PORT)%'
+  swoole.options:
+    worker_num: '%env(int:SWOOLE_WORKER_NUM)%'
+    task_worker_num: '%env(int:SWOOLE_TASK_WORKER_NUM)%'
+    task_enable_coroutine: '%env(bool:SWOOLE_TASK_ENABLED_COROUTINE)%'
+    dispatch_mode: '%env(int:SWOOLE_DISPATCH_MODE)%'
+    daemonize: '%env(int:SWOOLE_DAEMONIZE)%'
+    log_file: '%app.project_dir%/%env(string:SWOOLE_LOG_FILE)%'
+    log_level: '%env(int:SWOOLE_LOG_LEVEL)%'
+    output_buffer_size: '%env(int:SWOOLE_OUTPUT_BUFFER_SIZE)%'
+    package_max_length: '%env(int:SWOOLE_PACKAGE_MAX_LENGTH)%'
+    http_parse_post: '%env(bool:SWOOLE_HTTP_PARSE_POST)%'
+    http_compression: '%env(bool:SWOOLE_HTTP_COMPRESSION)%'
+    http_compression_level: '%env(int:SWOOLE_HTTP_COMPRESSION_LEVEL)%'
+
+services:
+  _defaults:
+    autowire: true
+    # we do not have default Symfony interfaces to autoconfigure them
+    autoconfigure: false
+    bind:
+      $appName: '%app.name%'
+      $appEnv: '%app.env%'
+
+  _instanceof: []
+    # services whose classes are instances of CustomInterface will be tagged automatically
+
+  App\:
+    resource: '../src/*'
+
+  # This service is retrieved from container directly and must be public
+  App\Application:
+    public: true
+
+  # 3rd-party services
+#  Psr\Log\LoggerInterface:
+#    factory: [ '@App\DependencyInjection\Factories\LoggerFactory', 'create' ]
+#    arguments:
+#      - '%app.name%'
+#      - '%logger.stream%'
+#      - '%logger.level%'
+
+  Swoole\Server:
+    class: Swoole\Http\Server
+    arguments:
+      - '%swoole.host%'
+      - '%swoole.port%'
+    calls:
+      - set: [ '%swoole.options%' ]

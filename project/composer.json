@@ -1,0 +1,27 @@
+{
+  "name": "dev-challenge/custom-excel",
+  "description": "Dev challenge XX Backend online round",
+  "type": "project",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^8.1",
+    "ext-openswoole": "^22.0"
+  },
+  "require-dev": {
+    "openswoole/ide-helper": "^22.0"
+  }
+}
