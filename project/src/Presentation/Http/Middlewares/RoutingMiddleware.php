@@ -35,6 +35,6 @@ class RoutingMiddleware implements MiddlewareInterface
             $request = $request->withAttribute($key, $value);
         }
 
-        return $routeInfo[1]($request);
+        return $routeInfo[1]($request, ...$routeInfo[2]);
     }
 }

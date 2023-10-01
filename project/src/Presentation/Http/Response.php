@@ -16,6 +16,12 @@ class Response extends BaseResponse
             ->withHeader('Content-Type', 'application/json');
     }
 
+    public static function badRequest(string $reason): BaseResponse
+    {
+        return (new self($reason))
+            ->withStatus(400);
+    }
+
     public static function notFound(): BaseResponse
     {
         return (new self(''))
