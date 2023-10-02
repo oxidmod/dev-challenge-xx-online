@@ -22,6 +22,8 @@ parameters:
     http_compression: '%env(bool:SWOOLE_HTTP_COMPRESSION)%'
     http_compression_level: '%env(int:SWOOLE_HTTP_COMPRESSION_LEVEL)%'
 
+  app.allowed_recursion_level: '%env(int:APP_ALLOWED_RECURSION_LEVEL)%'
+
 services:
   _defaults:
     autowire: true
@@ -45,13 +47,22 @@ services:
   App\Application:
     public: true
 
+  App\Domain\Sheet\ExpressionEvaluatorInterface: '@App\Infrastructure\Adapter\Expression\Evaluator'
+  App\Domain\Sheet\SheetsRepositoryInterface: '@App\Infrastructure\Adapter\Storage\ArraySheetsStorage'
+
   App\DependencyInjection\Factories\RouterFactory:
     arguments:
       $container: '@service_container'
       $projectRootPath: '%app.project_dir%'
       $isDebugEnabled: '%app.debug%'
 
+  App\Infrastructure\Adapter\Storage\ArraySheetsStorage:
+    arguments:
+      $allowedRecursionLevel: '%app.allowed_recursion_level%'
+
   # 3rd-party services
+  ChrisKonnertz\StringCalc\StringCalc: ~
+
   FastRoute\Dispatcher:
     factory: [ '@App\DependencyInjection\Factories\RouterFactory', 'create' ]
 

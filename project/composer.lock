@@ -4,8 +4,61 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "30073b412ec80e0f8149dbbde514e84c",
+    "content-hash": "597c846ddc7640f5effcc1ad556a2c25",
     "packages": [
+        {
+            "name": "chriskonnertz/string-calc",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chriskonnertz/string-calc.git",
+                "reference": "ab730666c321e42c4392856fc21eabdcf0719ae1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chriskonnertz/string-calc/zipball/ab730666c321e42c4392856fc21eabdcf0719ae1",
+                "reference": "ab730666c321e42c4392856fc21eabdcf0719ae1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=8.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "9.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ChrisKonnertz\\StringCalc": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Konnertz"
+                }
+            ],
+            "description": "StringCalc is a PHP calculator library for mathematical terms (expressions) passed as strings.",
+            "keywords": [
+                "calculation",
+                "expression",
+                "math",
+                "parser",
+                "string calc",
+                "string-calc",
+                "stringcalc",
+                "term"
+            ],
+            "support": {
+                "issues": "https://github.com/chriskonnertz/string-calc/issues",
+                "source": "https://github.com/chriskonnertz/string-calc/tree/v2.0.0"
+            },
+            "time": "2022-05-13T17:29:03+00:00"
+        },
         {
             "name": "graham-campbell/result-type",
             "version": "v1.1.1",
@@ -67,6 +120,58 @@
                 }
             ],
             "time": "2023-02-25T20:23:15+00:00"
+        },
+        {
+            "name": "madorin/matex",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/madorin/matex.git",
+                "reference": "2927e17d91bd294b18655e0d42c3a0c9e783a25f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/madorin/matex/zipball/2927e17d91bd294b18655e0d42c3a0c9e783a25f",
+                "reference": "2927e17d91bd294b18655e0d42c3a0c9e783a25f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Matex\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dorin Marcoci",
+                    "email": "dorin.marcoci@gmail.com",
+                    "homepage": "https://www.marcodor.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Mathematical expression parser and evaluator",
+            "homepage": "https://github.com/madorin/matex",
+            "keywords": [
+                "calculator",
+                "eval",
+                "evaluator",
+                "expression",
+                "formula",
+                "math",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/madorin/matex/issues",
+                "source": "https://github.com/madorin/matex"
+            },
+            "time": "2021-01-07T18:46:41+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1528,7 +1633,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-openswoole": "^22.0"
     },
     "platform-dev": [],

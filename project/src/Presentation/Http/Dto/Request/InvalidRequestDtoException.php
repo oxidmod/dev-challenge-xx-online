@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Presentation\Http\Dto;
+namespace App\Presentation\Http\Dto\Request;
 
 use InvalidArgumentException;
 use JsonSerializable;
 
-class InvalidDtoException extends InvalidArgumentException implements JsonSerializable
+class InvalidRequestDtoException extends InvalidArgumentException implements JsonSerializable
 {
     private array $errors = [];
 

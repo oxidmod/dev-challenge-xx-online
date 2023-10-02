@@ -7,24 +7,24 @@ use OpenSwoole\Core\Psr\Response as BaseResponse;
 
 class Response extends BaseResponse
 {
-    public static function json($data, int $status = 200): BaseResponse
+    public static function json($message, int $status = 200): BaseResponse
     {
-        $data = !is_string($data) ? json_encode($data) : $data;
+        $message = !is_string($message) ? json_encode($message) : $message;
 
-        return (new self($data))
+        return (new self($message))
             ->withStatus($status)
             ->withHeader('Content-Type', 'application/json');
     }
 
-    public static function badRequest(string $reason): BaseResponse
+    public static function badRequest(string $message): BaseResponse
     {
-        return (new self($reason))
+        return (new self($message))
             ->withStatus(400);
     }
 
-    public static function notFound(): BaseResponse
+    public static function notFound(string $message = ''): BaseResponse
     {
-        return (new self(''))
+        return (new self($message))
             ->withStatus(404);
     }
 

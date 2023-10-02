@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Presentation\Http\Dto;
+namespace App\Presentation\Http\Dto\Request;
 
 class SaveSheetRequestDto extends SheetRequestDto
 {
@@ -24,6 +24,10 @@ class SaveSheetRequestDto extends SheetRequestDto
             return;
         }
 
-        $this->value = (string)$data['value'];
+        $this->value = strtolower((string)$data['value']);
+
+        if ($this->value === '=') {
+            $this->getException()->addError(':value', 'Expression is required');
+        }
     }
 }

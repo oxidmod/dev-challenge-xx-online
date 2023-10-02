@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Middlewares;
 
-use App\Presentation\Http\Dto\InvalidDtoException;
+use App\Domain\NotFoundException;
+use App\Domain\Sheet\CalculationException;
+use App\Presentation\Http\Dto\Request\InvalidRequestDtoException;
+use App\Presentation\Http\Dto\Response\CellResponseDto;
 use App\Presentation\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,8 +20,12 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
-        } catch (InvalidDtoException $exception) {
-            return Response::json($exception, 422);
+        } catch (NotFoundException $exception) {
+            return Response::json(['error' => $exception->getMessage()], 404);
+        } catch (InvalidRequestDtoException $exception) {
+            return Response::json(['error' => $exception], 422);
+        } catch (CalculationException $exception) {
+            return Response::json(CellResponseDto::fromCell($exception->cell), 422);
         } catch (Throwable $exception) {
             return Response::serverError($exception->getMessage());
         }
