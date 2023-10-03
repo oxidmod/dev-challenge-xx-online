@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Domain\Sheet;
 
 use App\Domain\NotFoundException;
-use App\Domain\ValueParser\ValueParser;
 
 class Sheet
 {
@@ -37,6 +36,12 @@ class Sheet
         }
 
         return $this->cells[$id];
+    }
+
+    /** @return Cell[] */
+    public function getCells(): array
+    {
+        return array_values($this->cells);
     }
 
     public function getOrCreateCell(string $id): Cell
@@ -100,7 +105,7 @@ class Sheet
         }
 
         foreach ($dependencies as $cellId => $dependentCellIds) {
-            $this->getCell($cellId)->setDependentCellIds(array_keys($dependencies));
+            $this->getCell($cellId)->setDependentCellIds(array_keys($dependentCellIds));
         }
     }
 

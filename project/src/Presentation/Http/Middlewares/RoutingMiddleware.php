@@ -10,10 +10,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class RoutingMiddleware implements MiddlewareInterface
+readonly class RoutingMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private readonly Dispatcher $routeDispatcher
+        private Dispatcher $routeDispatcher
     ){
     }
     

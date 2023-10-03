@@ -6,9 +6,9 @@ namespace App\Infrastructure\Adapter\Storage;
 use App\Domain\NotFoundException;
 use App\Domain\Sheet\ExpressionEvaluatorInterface;
 use App\Domain\Sheet\Sheet;
-use App\Domain\Sheet\SheetsRepositoryInterface;
+use App\Domain\Sheet\SheetsStorageInterface;
 
-class ArraySheetsStorage implements SheetsRepositoryInterface
+class ArraySheetsStorage implements SheetsStorageInterface
 {
     public function __construct(
         private readonly ExpressionEvaluatorInterface $expressionEvaluator,
@@ -31,7 +31,7 @@ class ArraySheetsStorage implements SheetsRepositoryInterface
         return $this->sheets[$sheetId];
     }
 
-    public function putSheet(Sheet $sheet): void
+    public function saveSheet(Sheet $sheet): void
     {
         $this->sheets[$sheet->getId()] = $sheet;
     }

@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use App\Application;
 use Dotenv\Dotenv;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
@@ -53,6 +52,5 @@ if (!$containerConfigCache->isFresh()) {
 }
 
 require_once $file;
-$container = new CachedContainer();
 
-return $container->get(Application::class);
+return new CachedContainer();

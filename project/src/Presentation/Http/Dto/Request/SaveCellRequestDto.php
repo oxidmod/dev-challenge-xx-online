@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Dto\Request;
 
-class SaveSheetRequestDto extends SheetRequestDto
+class SaveCellRequestDto extends CellRequestDto
 {
     public readonly string $value;
 

@@ -1,0 +1,37 @@
+version: "3.5"
+
+services:
+  app:
+    build: ./docker/php
+    environment:
+      AUTORELOAD_PROGRAMS: ""
+      AUTORELOAD_ANY_FILES: 0
+    ports:
+      - "8080:9501"
+    depends_on:
+      - db
+    volumes:
+      - ./project:/var/www
+    networks:
+      - app-network
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: custom_excel
+      POSTGRES_USER: custom_excel_user
+      POSTGRES_PASSWORD: custom_excel_pass
+    ports:
+      - "8888:5432"
+    volumes:
+      - ./docker/pgsql/initdb.d/:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db_data:

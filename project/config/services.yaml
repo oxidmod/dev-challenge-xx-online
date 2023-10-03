@@ -3,6 +3,15 @@ parameters:
   app.debug: '%env(bool:APP_DEBUG)%'
   app.name: '%env(string:APP_NAME)%'
 
+  app.allowed_recursion_level: '%env(int:APP_ALLOWED_RECURSION_LEVEL)%'
+
+  db.driver: pgsql
+  db.host: '%env(DB_HOST)%'
+  db.port: '%env(int:DB_PORT)%'
+  db.name: '%env(DB_NAME)%'
+  db.user: '%env(DB_USER)%'
+  db.pass: '%env(DB_PASS)%'
+
   logger.stream: '%env(string:LOGGER_STREAM)%'
   logger.level: '%env(int:LOGGER_LEVEL)%'
 
@@ -22,7 +31,6 @@ parameters:
     http_compression: '%env(bool:SWOOLE_HTTP_COMPRESSION)%'
     http_compression_level: '%env(int:SWOOLE_HTTP_COMPRESSION_LEVEL)%'
 
-  app.allowed_recursion_level: '%env(int:APP_ALLOWED_RECURSION_LEVEL)%'
 
 services:
   _defaults:
@@ -32,9 +40,11 @@ services:
     bind:
       $appName: '%app.name%'
       $appEnv: '%app.env%'
+      $allowedRecursionLevel: '%app.allowed_recursion_level%'
 
-  _instanceof: []
-    # services whose classes are instances of CustomInterface will be tagged automatically
+  _instanceof:
+    App\Infrastructure\PgSql\ConnectionAwareInterface:
+      tags: [ db.connection_aware ]
 
   App\:
     resource: '../src/*'
@@ -48,7 +58,8 @@ services:
     public: true
 
   App\Domain\Sheet\ExpressionEvaluatorInterface: '@App\Infrastructure\Adapter\Expression\Evaluator'
-  App\Domain\Sheet\SheetsRepositoryInterface: '@App\Infrastructure\Adapter\Storage\ArraySheetsStorage'
+#  App\Domain\Sheet\SheetsStorageInterface: '@App\Infrastructure\Adapter\Storage\ArraySheetsStorage'
+  App\Domain\Sheet\SheetsStorageInterface: '@App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage'
 
   App\DependencyInjection\Factories\RouterFactory:
     arguments:
@@ -56,9 +67,22 @@ services:
       $projectRootPath: '%app.project_dir%'
       $isDebugEnabled: '%app.debug%'
 
-  App\Infrastructure\Adapter\Storage\ArraySheetsStorage:
+  App\Infrastructure\Adapter\Storage\ArraySheetsStorage: ~
+  App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage: ~
+
+  App\Infrastructure\PgSql\PdoConnectionPool:
+    factory: [ '@App\DependencyInjection\Factories\PdoConnectionPoolFactory', 'create' ]
     arguments:
-      $allowedRecursionLevel: '%app.allowed_recursion_level%'
+      $driver: '%db.driver%'
+      $host: '%db.host%'
+      $port: '%db.port%'
+      $name: '%db.name%'
+      $user: '%db.user%'
+      $pass: '%db.pass%'
+
+  App\Infrastructure\PgSql\ConnectionManager:
+    arguments:
+      $services: !tagged_iterator db.connection_aware
 
   # 3rd-party services
   ChrisKonnertz\StringCalc\StringCalc: ~
@@ -75,8 +99,10 @@ services:
 
   OpenSwoole\Core\Psr\Middleware\StackHandler:
     arguments:
+      - '@App\Presentation\Http\Middlewares\DbContextMiddleware'
       - '@App\Presentation\Http\Middlewares\ErrorHandlerMiddleware'
       - '@App\Presentation\Http\Middlewares\ParseJsonMiddleware'
+      - '@App\Presentation\Http\Middlewares\TransactionMiddleware'
       - '@App\Presentation\Http\Middlewares\RoutingMiddleware'
 
   OpenSwoole\Http\Server:

@@ -2,5 +2,5 @@
 <?php
 declare(strict_types=1);
 
-$application = require_once __DIR__ . '/bootstrap.php';
-$application->run();
+$container = require_once __DIR__ . '/container.php';
+$container->get(\App\Application::class)->run();

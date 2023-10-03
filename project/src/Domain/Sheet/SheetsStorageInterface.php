@@ -5,7 +5,7 @@ namespace App\Domain\Sheet;
 
 use App\Domain\NotFoundException;
 
-interface SheetsRepositoryInterface
+interface SheetsStorageInterface
 {
     /**
      * @param string $sheetId
@@ -20,4 +20,6 @@ interface SheetsRepositoryInterface
      * @throws NotFoundException
      */
     public function getSheet(string $sheetId): Sheet;
+
+    public function saveSheet(Sheet $sheet): void;
 }
