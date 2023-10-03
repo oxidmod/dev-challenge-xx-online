@@ -23,8 +23,6 @@ parameters:
     task_enable_coroutine: '%env(bool:SWOOLE_TASK_ENABLED_COROUTINE)%'
     dispatch_mode: '%env(int:SWOOLE_DISPATCH_MODE)%'
     daemonize: '%env(int:SWOOLE_DAEMONIZE)%'
-    log_file: '%app.project_dir%/%env(string:SWOOLE_LOG_FILE)%'
-    log_level: '%env(int:SWOOLE_LOG_LEVEL)%'
     output_buffer_size: '%env(int:SWOOLE_OUTPUT_BUFFER_SIZE)%'
     package_max_length: '%env(int:SWOOLE_PACKAGE_MAX_LENGTH)%'
     http_parse_post: '%env(bool:SWOOLE_HTTP_PARSE_POST)%'

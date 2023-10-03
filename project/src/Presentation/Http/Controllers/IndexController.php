@@ -7,7 +7,7 @@ use App\Presentation\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class IndexController
+readonly class IndexController
 {
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
