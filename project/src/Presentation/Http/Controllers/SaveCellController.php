@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\Controllers;
 
-use App\Domain\Sheet\SheetsStorageInterface;
-use App\Domain\ValueParser\ValueParser;
+use App\Application\Commands\SaveCellCommand;
 use App\Presentation\Http\Dto\Request\SaveCellRequestDto;
 use App\Presentation\Http\Dto\Response\CellResponseDto;
 use App\Presentation\Http\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-readonly class SaveSheetController
+readonly class SaveCellController
 {
     public function __construct(
-        private SheetsStorageInterface $sheetsRepository,
-        private ValueParser $valueParser,
+        private SaveCellCommand $command
     ) {
     }
 
@@ -23,13 +21,7 @@ readonly class SaveSheetController
     {
         $requestDto = new SaveCellRequestDto($sheetId, $cellId, $request->getParsedBody());
 
-        $sheet = $this->sheetsRepository->getOrCreateSheet($requestDto->sheetId);
-
-        $cell = $sheet->getOrCreateCell($requestDto->cellId);
-
-        $cell->setNewValue($this->valueParser, $requestDto->value);
-
-        $this->sheetsRepository->saveSheet($sheet);
+        $cell = $this->command->execute($requestDto->sheetId, $requestDto->cellId, $requestDto->value);
 
         return Response::json(CellResponseDto::fromCell($cell), 201);
     }
