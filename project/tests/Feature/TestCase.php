@@ -5,23 +5,20 @@ namespace App\Tests\Feature;
 
 use App\DependencyInjection\Factories\PdoConnectionPoolFactory;
 use App\Infrastructure\PgSql\ConnectionManager;
-use App\Infrastructure\PgSql\PdoConnectionPool;
 use App\Tests\TestCase as BaseTestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TestCase extends BaseTestCase
 {
-    protected static ContainerInterface $container;
+    protected static ?ContainerInterface $container = null;
 
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
-        $containerBuilder = require __DIR__ . '/../../container.php';
-        self::$container  = $containerBuilder('test');
-
-        self::$container->get(ConnectionManager::class)->setConnection(
-            self::$container->get(PdoConnectionPoolFactory::class)->createPdo(name: self::$container->getParameter('db.name') . '_test')
+        $container = self::getContainer();
+        $container->get(ConnectionManager::class)->setConnection(
+            $container->get(PdoConnectionPoolFactory::class)->createPdo(name: $container->getParameter('db.name') . '_test')
         );
     }
 
@@ -29,6 +26,21 @@ class TestCase extends BaseTestCase
     {
         parent::tearDownAfterClass();
 
+        self::getContainer()
+            ->get(PdoConnectionPoolFactory::class)
+            ->createPdo(name: self::getContainer()->getParameter('db.name') . '_test')
+            ->query('DELETE from sheets WHERE 1=1');
+
         self::$container = null;
+    }
+
+    protected static function getContainer(): ContainerInterface
+    {
+        if (self::$container === null) {
+            $containerBuilder = require __DIR__ . '/../../container.php';
+            self::$container  = $containerBuilder('test');
+        }
+
+        return self::$container;
     }
 }
