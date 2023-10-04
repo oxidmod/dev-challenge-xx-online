@@ -26,11 +26,6 @@ class TestCase extends BaseTestCase
     {
         parent::tearDownAfterClass();
 
-        self::getContainer()
-            ->get(PdoConnectionPoolFactory::class)
-            ->createPdo(name: self::getContainer()->getParameter('db.name') . '_test')
-            ->query('DELETE from sheets WHERE 1=1');
-
         self::$container = null;
     }
 
