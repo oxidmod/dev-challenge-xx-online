@@ -28,7 +28,7 @@ readonly class ErrorHandlerMiddleware implements MiddlewareInterface
         } catch (CalculationException $exception) {
             $response = Response::json(CellResponseDto::fromCell($exception->cell), 422);
         } catch (Throwable $exception) {
-            $response = Response::serverError($exception->getMessage());
+            $response = Response::json(['error' => $exception->getMessage()], 500);
         } finally {
            return $exception ? $response->withHeader('X-Error-Message', $exception->getMessage()) : $response;
         }
