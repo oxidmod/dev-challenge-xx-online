@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+$containerBuilder = require_once __DIR__ . '/container.php';
 /** @var ContainerInterface $container */
-$container = require_once __DIR__ . '/container.php';
+$container = $containerBuilder();
 
 return
 [
