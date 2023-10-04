@@ -14,7 +14,7 @@ class ConnectionManager
     /** @var ConnectionAwareInterface[] */
     private array $services;
 
-    private PDOClient $currentConnection;
+    private PDOClient|PDO $currentConnection;
 
     private bool $newConnectionFetched = false;
 
@@ -29,7 +29,7 @@ class ConnectionManager
         }
     }
 
-    public function setConnection(PDOClient $connection): void
+    public function setConnection(PDOClient|PDO $connection): void
     {
         $this->currentConnection = $connection;
         $this->newConnectionFetched = false;

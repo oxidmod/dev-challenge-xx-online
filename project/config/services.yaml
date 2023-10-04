@@ -1,5 +1,4 @@
 parameters:
-  app.env: '%env(string:APP_ENV)%'
   app.debug: '%env(bool:APP_DEBUG)%'
   app.name: '%env(string:APP_NAME)%'
 
@@ -35,7 +34,6 @@ services:
     autoconfigure: false
     bind:
       $appName: '%app.name%'
-      $appEnv: '%app.env%'
 
   _instanceof:
     App\Infrastructure\PgSql\ConnectionAwareInterface:
@@ -43,6 +41,10 @@ services:
 
   App\:
     resource: '../src/*'
+
+  App\Application\Commands\:
+    resource: '../src/Application/Commands'
+    public: true
 
   App\Presentation\Http\Controllers\:
     resource: '../src/Presentation/Http/Controllers/'
@@ -54,20 +56,19 @@ services:
 
   App\Domain\Sheet\DependencyGraphFactoryInterface: '@App\Infrastructure\Adapter\DependencyGraph\GraphFactory'
   App\Domain\Sheet\ExpressionEvaluatorInterface: '@App\Infrastructure\Adapter\Expression\Evaluator'
-#  App\Domain\Sheet\SheetsStorageInterface: '@App\Infrastructure\Adapter\Storage\ArraySheetsStorage'
   App\Domain\Sheet\SheetsStorageInterface: '@App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage'
+
+  sheet_storage:
+    public: true
+    alias: App\Domain\Sheet\SheetsStorageInterface
 
   App\DependencyInjection\Factories\RouterFactory:
     arguments:
       $container: '@service_container'
       $projectRootPath: '%app.project_dir%'
 
-
-  App\Infrastructure\Adapter\Storage\ArraySheetsStorage: ~
-  App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage: ~
-
-  App\Infrastructure\PgSql\PdoConnectionPool:
-    factory: [ '@App\DependencyInjection\Factories\PdoConnectionPoolFactory', 'create' ]
+  App\DependencyInjection\Factories\PdoConnectionPoolFactory:
+    public: true
     arguments:
       $driver: '%db.driver%'
       $host: '%db.host%'
@@ -76,7 +77,15 @@ services:
       $user: '%db.user%'
       $pass: '%db.pass%'
 
+  App\Infrastructure\Adapter\Storage\ArraySheetsStorage: ~
+  App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage: ~
+
+  App\Infrastructure\PgSql\PdoConnectionPool:
+    public: true
+    factory: [ '@App\DependencyInjection\Factories\PdoConnectionPoolFactory', 'create' ]
+
   App\Infrastructure\PgSql\ConnectionManager:
+    public: true
     arguments:
       $services: !tagged_iterator db.connection_aware
 

@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use App\Tests\TestCase;
+use App\Tests\Feature\TestCase as FeatureTestCase;
+use App\Tests\TestCase as UnitTestCase;
 
-uses(TestCase::class)
+uses(FeatureTestCase::class)
     ->group('feature')
     ->in('Feature');
 
-uses(TestCase::class)
+uses(UnitTestCase::class)
     ->group('unit')
     ->in('Unit');

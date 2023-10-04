@@ -4,15 +4,16 @@ declare(strict_types=1);
 namespace App\Infrastructure\PgSql;
 
 use OpenSwoole\Core\Coroutine\Client\PDOClient;
+use PDO;
 
 /**
- * @property-read \PDO|PDOClient $connection
+ * @property-read PDO|PDOClient $connection
  */
 trait ConnectionAwareTrait
 {
-    protected PDOClient $connection;
+    protected PDOClient|PDO $connection;
 
-    public function setConnection(PDOClient $connection): void
+    public function setConnection(PDOClient|PDO $connection): void
     {
         $this->connection = $connection;
     }

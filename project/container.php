@@ -5,6 +5,7 @@ use Dotenv\Dotenv;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
@@ -20,38 +21,39 @@ set_error_handler(function ($severity, $message, $file, $line) {
     }
 });
 
-$projectDir = __DIR__;
+return function (string $env = 'prod'): ContainerInterface {
+    $projectDir = __DIR__;
 
-// load .env config
-$dotenv = Dotenv::createImmutable($projectDir);
-$variables = $dotenv->safeLoad();
+    // load .env config
+    $dotenv = Dotenv::createMutable($projectDir);
+    $variables = $dotenv->safeLoad();
 
-$env = $variables['APP_ENV'] ?? 'prod';
-$isDebug = ($variables['APP_DEBUG'] ?? null) === 'true';
+    $isDebug = ($variables['APP_DEBUG'] ?? null) === 'true';
 
-$file = "$projectDir/cache/container_{$env}.php";
-$containerConfigCache = new ConfigCache($file, $isDebug);
+    $file = "$projectDir/cache/container_{$env}.php";
+    $containerConfigCache = new ConfigCache($file, $isDebug);
 
-if (!$containerConfigCache->isFresh()) {
-    $containerBuilder = new ContainerBuilder();
-    $containerBuilder->setParameter('app.project_dir', $projectDir);
-    $containerBuilder->setParameter('app.config_dir', "$projectDir/config");
+    if (!$containerConfigCache->isFresh()) {
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->setParameter('app.project_dir', $projectDir);
+        $containerBuilder->setParameter('app.config_dir', "$projectDir/config");
 
-    $loader = new YamlFileLoader(
-        $containerBuilder,
-        new FileLocator("$projectDir/config")
-    );
-    $loader->load('services.yaml');
+        $loader = new YamlFileLoader(
+            $containerBuilder,
+            new FileLocator("$projectDir/config")
+        );
+        $loader->load('services.yaml');
 
-    $containerBuilder->compile();
+        $containerBuilder->compile();
 
-    $dumper = new PhpDumper($containerBuilder);
-    $containerConfigCache->write(
-        $dumper->dump(['class' => 'CachedContainer']),
-        $containerBuilder->getResources()
-    );
-}
+        $dumper = new PhpDumper($containerBuilder);
+        $containerConfigCache->write(
+            $dumper->dump(['class' => 'CachedContainer']),
+            $containerBuilder->getResources()
+        );
+    }
 
-require_once $file;
+    require_once $file;
 
-return new CachedContainer();
+    return new CachedContainer();
+};
