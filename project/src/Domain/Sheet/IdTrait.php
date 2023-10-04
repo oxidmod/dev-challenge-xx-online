@@ -11,6 +11,6 @@ trait IdTrait
     {
         $regex = sprintf('~[^%s]~', self::ALLOWED_ID_SYMBOLS);
 
-        return !preg_match($regex, $value);
+        return !empty($value) && !preg_match($regex, $value);
     }
 }

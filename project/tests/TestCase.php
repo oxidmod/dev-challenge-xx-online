@@ -5,11 +5,12 @@ namespace App\Tests;
 
 use App\Domain\Sheet\Cell;
 use App\Domain\Sheet\Sheet;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
-    protected function createCellMock(array $data = []): Cell
+    protected function createCellMock(array $data = []): Cell|MockObject
     {
         $result = array_key_exists('result', $data) ? $data['result'] : ($data['value'] ?? null);
 
@@ -23,13 +24,21 @@ class TestCase extends BaseTestCase
         return $mock;
     }
 
-    protected function createSheetMock(array $data = []): Sheet
+    protected function createSheetMock(array $data = []): Sheet|MockObject
     {
         $mock = $this->createMock(Sheet::class);
         $mock->expects($this->any())->method('getId')->willReturn($data['id'] ?? uniqid('sheet_'));
 
         $cells = array_map(fn (array $cellData) => $this->createCellMock($cellData), $data['cells'] ?? []);
         $mock->expects($this->any())->method('getCells')->willReturn($cells);
+
+        return $mock;
+    }
+
+    protected function createNotCalledMock(string $class): MockObject
+    {
+        $mock = $this->createMock($class);
+        $mock->expects($this->never())->method($this->anything());
 
         return $mock;
     }

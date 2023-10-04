@@ -65,6 +65,13 @@ class Cell
         return $this->result ?? '';
     }
 
+    /**
+     * @param ValueParser $parser
+     * @param string $value
+     * @return void
+     *
+     * @throws CalculationException
+     */
     public function setNewValue(ValueParser $parser, string $value): void
     {
         $result = $parser->parse($value, $this->sheet);

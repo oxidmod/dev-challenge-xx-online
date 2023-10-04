@@ -13,8 +13,17 @@ describe('Sheet request DTO test', function () {
         $this->assertSame('0-9az~._.~', $dto->sheetId);
     });
 
-    it('throws exception with invalid data', function () {
+    it('throws exception with invalid id', function () {
         $sheetId = 'not allowed+id/';
+
+        $this->expectException(InvalidRequestDtoException::class);
+        $this->expectExceptionMessage('Invalid data was given.');
+
+        new SheetRequestDto($sheetId);
+    });
+
+    it('throws exception with empty id', function () {
+        $sheetId = '';
 
         $this->expectException(InvalidRequestDtoException::class);
         $this->expectExceptionMessage('Invalid data was given.');

@@ -7,11 +7,11 @@ use App\Domain\Sheet\Cell;
 use App\Domain\Sheet\SheetsStorageInterface;
 use App\Domain\ValueParser\ValueParser;
 
-readonly class SaveCellCommand
+class SaveCellCommand
 {
     public function __construct(
-        private SheetsStorageInterface $sheetsStorage,
-        private ValueParser $valueParser
+        private readonly SheetsStorageInterface $sheetsStorage,
+        private readonly ValueParser $valueParser
     ) {
     }
 

@@ -26,6 +26,7 @@ describe('Save cell request DTO test', function () {
         'invalid sheet id' => ['not allowed+id/', '0-9aZ~._.~', ['value' => '=1+2']],
         'invalid cell id' => ['0-9aZ~._.~', 'not allowed+id/', ['value' => '1+2']],
         'invalid data (empty data)' => ['not allowed+id/', '0-9aZ~._.~', ['value1' => '1']],
+        'invalid data (empty ids)' => ['', '', ['value' => '1']],
         'invalid data (empty formula)' => ['not allowed+id/', '0-9aZ~._.~', ['value' => '=']],
         'invalid both ids and data' => ['not allowed+id/', 'not allowed+id/', ['value' => '=']],
     ]);

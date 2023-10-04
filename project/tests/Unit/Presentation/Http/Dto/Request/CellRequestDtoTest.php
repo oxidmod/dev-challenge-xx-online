@@ -24,5 +24,6 @@ describe('Cell request DTO test', function () {
         'invalid sheet id' => ['not allowed+id/', '0-9aZ~._.~'],
         'invalid cell id' => ['0-9aZ~._.~', 'not allowed+id/'],
         'invalid both ids' => ['not allowed+id/', 'with*math=ops'],
+        'empty both ids' => ['', ''],
     ]);
 });

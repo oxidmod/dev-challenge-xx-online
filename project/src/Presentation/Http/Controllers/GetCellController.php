@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 readonly class GetCellController
 {
     public function __construct(
-        private SheetsStorageInterface $sheetsRepository,
+        private SheetsStorageInterface $sheetsStorage,
     ) {
     }
 
@@ -21,7 +21,7 @@ readonly class GetCellController
     {
         $requestDto = new CellRequestDto($sheetId, $cellId);
 
-        $sheet = $this->sheetsRepository->getSheet($requestDto->sheetId);
+        $sheet = $this->sheetsStorage->getSheet($requestDto->sheetId);
         $cell = $sheet->getCell($cellId);
 
         return Response::json(CellResponseDto::fromCell($cell));
