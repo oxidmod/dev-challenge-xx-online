@@ -16,7 +16,6 @@ class Sheet
         private readonly string $id,
         private readonly DependencyGraphFactoryInterface $dependencyGraphFactory,
         private readonly ExpressionEvaluatorInterface $evaluator,
-        private readonly int $maxRecursionLevel,
     ) {
     }
 

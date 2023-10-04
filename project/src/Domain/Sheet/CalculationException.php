@@ -33,12 +33,4 @@ class CalculationException extends DomainException
             previous: $previous,
         );
     }
-
-    public static function recursionDepthError(Cell $cell): self
-    {
-        return new self(
-            cell: $cell,
-            message: 'Max recursion level was reached.',
-        );
-    }
 }

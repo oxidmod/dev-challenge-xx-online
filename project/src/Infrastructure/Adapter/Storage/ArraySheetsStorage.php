@@ -14,7 +14,6 @@ class ArraySheetsStorage implements SheetsStorageInterface
     public function __construct(
         private readonly DependencyGraphFactoryInterface $dependencyGraphFactory,
         private readonly ExpressionEvaluatorInterface $expressionEvaluator,
-        private readonly int $allowedRecursionLevel,
         private array $sheets = []
     ) {
     }
@@ -31,7 +30,6 @@ class ArraySheetsStorage implements SheetsStorageInterface
                 $sheetId,
                 $this->dependencyGraphFactory,
                 $this->expressionEvaluator,
-                $this->allowedRecursionLevel
             );
         }
 

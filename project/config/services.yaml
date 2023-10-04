@@ -3,8 +3,6 @@ parameters:
   app.debug: '%env(bool:APP_DEBUG)%'
   app.name: '%env(string:APP_NAME)%'
 
-  app.allowed_recursion_level: '%env(int:APP_ALLOWED_RECURSION_LEVEL)%'
-
   db.driver: pgsql
   db.host: '%env(DB_HOST)%'
   db.port: '%env(int:DB_PORT)%'
@@ -38,7 +36,6 @@ services:
     bind:
       $appName: '%app.name%'
       $appEnv: '%app.env%'
-      $allowedRecursionLevel: '%app.allowed_recursion_level%'
 
   _instanceof:
     App\Infrastructure\PgSql\ConnectionAwareInterface:

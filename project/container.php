@@ -26,9 +26,10 @@ $projectDir = __DIR__;
 $dotenv = Dotenv::createImmutable($projectDir);
 $variables = $dotenv->safeLoad();
 
+$env = $variables['APP_ENV'] ?? 'prod';
 $isDebug = ($variables['APP_DEBUG'] ?? null) === 'true';
 
-$file = "$projectDir/cache/container.php";
+$file = "$projectDir/cache/container_{$env}.php";
 $containerConfigCache = new ConfigCache($file, $isDebug);
 
 if (!$containerConfigCache->isFresh()) {

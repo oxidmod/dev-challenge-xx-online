@@ -14,7 +14,10 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   },
   "minimum-stability": "stable",
   "require": {
@@ -34,6 +37,12 @@
     "vlucas/phpdotenv": "^5.5"
   },
   "require-dev": {
-    "openswoole/ide-helper": "^22.0"
+    "openswoole/ide-helper": "^22.0",
+    "pestphp/pest": "^2.20"
+  },
+  "scripts": {
+    "test": "php vendor/bin/pest",
+    "test-feature": "php vendor/bin/pest --group=feature",
+    "test-unit": "php vendor/bin/pest --group=unit"
   }
 }

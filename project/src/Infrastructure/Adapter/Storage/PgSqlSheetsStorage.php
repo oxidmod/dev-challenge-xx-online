@@ -20,7 +20,6 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
     public function __construct(
         private readonly DependencyGraphFactoryInterface $dependencyGraphFactory,
         private readonly ExpressionEvaluatorInterface $expressionEvaluator,
-        private readonly int $allowedRecursionLevel,
     ) {
     }
 
@@ -69,7 +68,6 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
             $id,
             $this->dependencyGraphFactory,
             $this->expressionEvaluator,
-            $this->allowedRecursionLevel
         );
 
         $constructor = (function (array $cells): Sheet {
