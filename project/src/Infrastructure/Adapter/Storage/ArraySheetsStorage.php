@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Adapter\Storage;
 
 use App\Domain\NotFoundException;
+use App\Domain\Sheet\DependencyGraphFactoryInterface;
 use App\Domain\Sheet\ExpressionEvaluatorInterface;
 use App\Domain\Sheet\Sheet;
 use App\Domain\Sheet\SheetsStorageInterface;
@@ -11,6 +12,7 @@ use App\Domain\Sheet\SheetsStorageInterface;
 class ArraySheetsStorage implements SheetsStorageInterface
 {
     public function __construct(
+        private readonly DependencyGraphFactoryInterface $dependencyGraphFactory,
         private readonly ExpressionEvaluatorInterface $expressionEvaluator,
         private readonly int $allowedRecursionLevel,
         private array $sheets = []
@@ -25,7 +27,12 @@ class ArraySheetsStorage implements SheetsStorageInterface
     public function getOrCreateSheet(string $sheetId): Sheet
     {
         if (!array_key_exists($sheetId, $this->sheets)) {
-            $this->sheets[$sheetId] = new Sheet($sheetId, $this->expressionEvaluator, $this->allowedRecursionLevel);
+            $this->sheets[$sheetId] = new Sheet(
+                $sheetId,
+                $this->dependencyGraphFactory,
+                $this->expressionEvaluator,
+                $this->allowedRecursionLevel
+            );
         }
 
         return $this->sheets[$sheetId];

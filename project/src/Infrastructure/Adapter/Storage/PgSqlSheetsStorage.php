@@ -5,6 +5,7 @@ namespace App\Infrastructure\Adapter\Storage;
 
 use App\Domain\NotFoundException;
 use App\Domain\Sheet\Cell;
+use App\Domain\Sheet\DependencyGraphFactoryInterface;
 use App\Domain\Sheet\ExpressionEvaluatorInterface;
 use App\Domain\Sheet\Sheet;
 use App\Domain\Sheet\SheetsStorageInterface;
@@ -17,6 +18,7 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
     use ConnectionAwareTrait;
 
     public function __construct(
+        private readonly DependencyGraphFactoryInterface $dependencyGraphFactory,
         private readonly ExpressionEvaluatorInterface $expressionEvaluator,
         private readonly int $allowedRecursionLevel,
     ) {
@@ -51,7 +53,6 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
                     'value' => $cell->getValue(),
                     'parsed_value' => $cell->getParsedValue(),
                     'referenced_cell_ids' => $cell->getReferencedCellIds(),
-                    'dependent_cell_ids' => $cell->getDependentCellIds(),
                     'result' => $cell->hasResult() ? $cell->getResult() : null,
                 ])),
             ];
@@ -64,7 +65,12 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
 
     private function createSheet(string $id, array $rows): Sheet
     {
-        $sheet = new Sheet($id, $this->expressionEvaluator, $this->allowedRecursionLevel);
+        $sheet = new Sheet(
+            $id,
+            $this->dependencyGraphFactory,
+            $this->expressionEvaluator,
+            $this->allowedRecursionLevel
+        );
 
         $constructor = (function (array $cells): Sheet {
             $this->cells = $cells;
@@ -93,7 +99,6 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
             $this->value = $props['value'] ?? '';
             $this->parsedValue = $props['parsed_value'] ?? '';
             $this->referencedCellIds = $props['referenced_cell_ids'] ?? [];
-            $this->dependentCellIds = $props['dependent_cell_ids'] ?? [];
             $this->result = $props['result'] ?? null;
 
             return $this;
@@ -104,7 +109,7 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
 
     private function loadCells(string $sheetId, bool $forUpdate = false): array
     {
-        $query = 'SELECT * FROM sheets WHERE sheet_id = :sheet_id';
+        $query = 'SELECT * FROM sheets WHERE sheet_id = :sheet_id ORDER BY sheet_id, cell_id';
         if ($forUpdate) {
             $query .= ' FOR UPDATE';
         }

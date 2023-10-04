@@ -58,7 +58,7 @@ class ValueParser
             $value,
         );
 
-        return [$parsedValue, array_keys($referencedIds)];
+        return [substr($parsedValue, 1), array_keys($referencedIds)];
     }
 
     private function parseCellIdWithMinusSign(string $value, Sheet $sheet, array &$referencedIds): string

@@ -25,11 +25,12 @@ class CalculationException extends DomainException
         );
     }
 
-    public static function circularReference(Cell $cell): self
+    public static function circularReference(Cell $cell, ?Throwable $previous = null): self
     {
         return new self(
             cell: $cell,
             message: 'Circular reference was found during sheet calculation.',
+            previous: $previous,
         );
     }
 

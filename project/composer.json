@@ -22,6 +22,7 @@
     "ext-openswoole": "^22.0",
     "ext-pdo": "*",
     "chriskonnertz/string-calc": "^2.0",
+    "digilist/dependency-graph": "^0.3.0",
     "monolog/monolog": "^3.4",
     "nikic/fast-route": "^1.3",
     "openswoole/core": "^22.1",

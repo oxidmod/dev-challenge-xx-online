@@ -18,16 +18,19 @@ readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        $exception = null;
         try {
-            return $handler->handle($request);
+            $response = $handler->handle($request);
         } catch (NotFoundException $exception) {
-            return Response::json(['error' => $exception->getMessage()], 404);
+            $response = Response::json(['error' => $exception->getMessage()], 404);
         } catch (InvalidRequestDtoException $exception) {
-            return Response::json(['error' => $exception], 422);
+            $response = Response::json(['error' => $exception], 422);
         } catch (CalculationException $exception) {
-            return Response::json(CellResponseDto::fromCell($exception->cell), 422);
+            $response = Response::json(CellResponseDto::fromCell($exception->cell), 422);
         } catch (Throwable $exception) {
-            return Response::serverError($exception->getMessage());
+            $response = Response::serverError($exception->getMessage());
+        } finally {
+           return $exception ? $response->withHeader('X-Error-Message', $exception->getMessage()) : $response;
         }
     }
 }

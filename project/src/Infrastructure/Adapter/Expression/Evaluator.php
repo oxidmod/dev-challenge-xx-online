@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Adapter\Expression;
 
 use App\Domain\Sheet\Cell;
+use App\Domain\Sheet\DependencyGraphInterface;
 use App\Domain\Sheet\ExpressionEvaluatorInterface;
 use App\Domain\Sheet\CalculationException;
 use App\Domain\Sheet\Sheet;
@@ -18,16 +19,34 @@ class Evaluator implements ExpressionEvaluatorInterface
     ) {
     }
 
-    public function evaluate(Sheet $sheet, Cell $cell): string
+    public function evaluate(Sheet $sheet, Cell $updatedCell, DependencyGraphInterface $dependencyGraph): void
+    {
+        $orderedCellIds = $dependencyGraph->getCalculationOrder();
+
+        foreach ($orderedCellIds as $cellId) {
+            try {
+                $cell = $sheet->getCell($cellId);
+
+                if ($cell->hasResult()) continue;
+
+                $cell->setResult(
+                    $this->doEvaluateCell($sheet, $cell)
+                );
+            } catch (Throwable $exception) {
+                # As value valid value in the updated cell could cause errors in dependent cells we do not want to save it
+                $updatedCell->setResult(null);
+
+                throw CalculationException::calculationError($updatedCell, $exception);
+            }
+        }
+    }
+
+    private function doEvaluateCell(Sheet $sheet, Cell $cell): string
     {
         $referencedCellValues = array_reduce(
             $cell->getReferencedCellIds(),
             function (array $result, string $refId) use ($sheet, $cell) {
                 $ref = $sheet->getCell($refId);
-                if (!$ref->hasResult()) {
-                    throw CalculationException::circularReference($ref);
-                }
-
                 $result[ValueParser::formatCellIdPlaceholder($refId)] = $ref->getResult();
 
                 return $result;
@@ -40,14 +59,10 @@ class Evaluator implements ExpressionEvaluatorInterface
             $expression = str_replace(
                 array_keys($referencedCellValues),
                 array_values($referencedCellValues),
-                $cell->getParsedValue()
+                $expression
             );
         }
 
-        try {
-            return (string)$this->calculator->calculate(substr($expression, 1));
-        } catch (Throwable $exception) {
-            throw CalculationException::calculationError($cell, $exception);
-        }
+        return (string)$this->calculator->calculate($expression);
     }
 }

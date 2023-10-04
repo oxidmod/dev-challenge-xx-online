@@ -14,6 +14,7 @@ class Sheet
 
     public function __construct(
         private readonly string $id,
+        private readonly DependencyGraphFactoryInterface $dependencyGraphFactory,
         private readonly ExpressionEvaluatorInterface $evaluator,
         private readonly int $maxRecursionLevel,
     ) {
@@ -54,72 +55,32 @@ class Sheet
     }
 
     /**
-     * Recursively calculates cell value and all dependent cells values
-     *
      * @param Cell $cell
      * @return void
      */
     public function recalculateCell(Cell $cell): void
     {
-        $this->calculateCell($cell);
-        $this->refreshCellsDependencies();
-    }
+        $dependencyGraph = $this->dependencyGraphFactory->create($this, $cell);
 
-    private function calculateCell(Cell $cell, int $level = 0): void
-    {
-        if ($level > $this->maxRecursionLevel) {
-            throw CalculationException::recursionDepthError($cell);
+        $this->resetDependenciesResult($dependencyGraph, $cell);
+
+        if (!$cell->containsFormula()) {
+            $cell->setResult($cell->getParsedValue());
         }
 
-        $this->resetCellResult($cell);
-
-        $result = $cell->containsFormula() ?
-            $this->calculateCellWithFormula($cell) :
-            $this->calculateCellWithValue($cell);
-
-        $cell->setResult($result);
-
-        foreach ($cell->getDependentCellIds() as $cellId) {
-            $this->calculateCell($this->getCell($cellId), $level + 1);
-        }
+        $this->evaluator->evaluate($this, $cell, $dependencyGraph);
     }
 
-    private function calculateCellWithFormula(Cell $cell): string
+    private function resetDependenciesResult(DependencyGraphInterface $dependencyGraph, Cell $updatedCell): void
     {
-        return $this->evaluator->evaluate($this, $cell);
-    }
-
-    private function calculateCellWithValue(Cell $cell): string
-    {
-        # There is no calculations, just a simple value
-        return $cell->getParsedValue();
-    }
-
-    private function refreshCellsDependencies(): void
-    {
-        $dependencies = [];
         foreach ($this->cells as $cell) {
-            foreach ($cell->getReferencedCellIds() as $refId) {
-                $dependencies[$refId][$cell->getId()] = 1;
+            if ($cell === $updatedCell) {
+                continue;
             }
-        }
 
-        foreach ($dependencies as $cellId => $dependentCellIds) {
-            $this->getCell($cellId)->setDependentCellIds(array_keys($dependentCellIds));
-        }
-    }
-
-    /**
-     * Reset cell result and all dependent cells to prevent miscalculation
-     *
-     * @param Cell $cell
-     * @return void
-     */
-    private function resetCellResult(Cell $cell): void
-    {
-        $cell->setResult(null);
-        foreach ($cell->getDependentCellIds() as $cellId) {
-            $this->resetCellResult($this->getCell($cellId));
+            if ($dependencyGraph->hasDependency($cell, $updatedCell)) {
+                $cell->setResult(null);
+            }
         }
     }
 }

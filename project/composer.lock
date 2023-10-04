@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56c0ea3dcac429fa02537a9c34de2909",
+    "content-hash": "5e32e0c5dc0693d124929544d86a0349",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -349,6 +349,49 @@
                 "source": "https://github.com/chriskonnertz/string-calc/tree/v2.0.0"
             },
             "time": "2022-05-13T17:29:03+00:00"
+        },
+        {
+            "name": "digilist/dependency-graph",
+            "version": "v0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/digilist/dependency-graph.git",
+                "reference": "dd77f1a81c81d921c135b3c775fed054d4dbd5d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/digilist/dependency-graph/zipball/dd77f1a81c81d921c135b3c775fed054d4dbd5d2",
+                "reference": "dd77f1a81c81d921c135b3c775fed054d4dbd5d2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Digilist\\DependencyGraph\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Markus Fasselt",
+                    "email": "markus.fasselt@gmail.com"
+                }
+            ],
+            "description": "Dependency Graph Resolver in PHP",
+            "support": {
+                "issues": "https://github.com/digilist/dependency-graph/issues",
+                "source": "https://github.com/digilist/dependency-graph/tree/master"
+            },
+            "time": "2016-10-17T18:44:28+00:00"
         },
         {
             "name": "graham-campbell/result-type",

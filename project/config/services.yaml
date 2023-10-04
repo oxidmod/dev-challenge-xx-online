@@ -55,6 +55,7 @@ services:
   App\Application:
     public: true
 
+  App\Domain\Sheet\DependencyGraphFactoryInterface: '@App\Infrastructure\Adapter\DependencyGraph\GraphFactory'
   App\Domain\Sheet\ExpressionEvaluatorInterface: '@App\Infrastructure\Adapter\Expression\Evaluator'
 #  App\Domain\Sheet\SheetsStorageInterface: '@App\Infrastructure\Adapter\Storage\ArraySheetsStorage'
   App\Domain\Sheet\SheetsStorageInterface: '@App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage'

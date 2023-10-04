@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Domain\Sheet;
 
 use App\Domain\ValueParser\Formula;
+use App\Domain\ValueParser\ValueInterface;
 use App\Domain\ValueParser\ValueParser;
 
 class Cell
@@ -48,12 +49,6 @@ class Cell
         return $this->parsedValue;
     }
 
-    /** @return string[] - List of cell IDs which are depending on this cell value */
-    public function getDependentCellIds(): array
-    {
-        return $this->dependentCellIds;
-    }
-
     /** @return string[] - List of cell IDs which are used in this cell's formula  */
     public function getReferencedCellIds(): array
     {
@@ -70,25 +65,30 @@ class Cell
         return $this->result ?? '';
     }
 
-    public function setDependentCellIds(array $cellIds): void
-    {
-        $this->dependentCellIds = $cellIds;
-    }
-
     public function setNewValue(ValueParser $parser, string $value): void
     {
         $result = $parser->parse($value, $this->sheet);
+        if ($this->needsRecalculation($result)) {
+            $this->containsFormula = $result instanceof Formula;
+            $this->value = $result->getRawValue();
+            $this->parsedValue = $result->getParsedValue();
+            $this->referencedCellIds = $result->getReferencedCellIds();
+            $this->result = null;
 
-        $this->containsFormula = $result instanceof Formula;
-        $this->value = $result->getRawValue();
-        $this->parsedValue = $result->getParsedValue();
-        $this->referencedCellIds = $result->getReferencedCellIds();
-
-        $this->sheet->recalculateCell($this);
+            $this->sheet->recalculateCell($this);
+        }
     }
 
     public function setResult(?string $result): void
     {
         $this->result = $result;
+    }
+
+    private function needsRecalculation(ValueInterface $value): bool
+    {
+        $isFormula = $value instanceof Formula;
+
+        return $this->containsFormula !== $isFormula
+            || $this->parsedValue !== $value->getParsedValue();
     }
 }

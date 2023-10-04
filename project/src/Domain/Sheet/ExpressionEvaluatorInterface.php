@@ -7,10 +7,10 @@ interface ExpressionEvaluatorInterface
 {
     /**
      * @param Sheet $sheet
-     * @param Cell $cell
-     * @return string
+     * @param Cell $updatedCell
+     * @param DependencyGraphInterface $dependencyGraph
      *
      * @throws CalculationException
      */
-    public function evaluate(Sheet $sheet, Cell $cell): string;
+    public function evaluate(Sheet $sheet, Cell $updatedCell, DependencyGraphInterface $dependencyGraph): void;
 }
