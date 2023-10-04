@@ -10,7 +10,7 @@ class ValueParser
 {
     public static function formatCellIdPlaceholder(string $cellId): string
     {
-        return sprintf('__val(%s)__', $cellId);
+        return sprintf('##val(%s)##', $cellId);
     }
 
     public function parse(string $value, Sheet $sheet): ValueInterface

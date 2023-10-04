@@ -7,12 +7,11 @@ use FastRoute\Dispatcher;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use function FastRoute\cachedDispatcher;
 
-class RouterFactory
+readonly class RouterFactory
 {
     public function __construct(
-        private readonly ContainerInterface $container,
-        private readonly string $projectRootPath,
-        private readonly bool $isDebugEnabled
+        private ContainerInterface $container,
+        private string $projectRootPath,
     ) {
     }
 
@@ -24,7 +23,7 @@ class RouterFactory
             $routesClosure($this->container),
             [
                 'cacheFile' => implode(DIRECTORY_SEPARATOR, [$this->projectRootPath, 'cache', 'route.cache']),
-                'cacheDisabled' => !$this->isDebugEnabled,
+                'cacheDisabled' => true,
             ]
         );
     }

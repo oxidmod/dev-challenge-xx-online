@@ -41,8 +41,9 @@
     "pestphp/pest": "^2.20"
   },
   "scripts": {
-    "test": "php vendor/bin/pest",
-    "test-feature": "php vendor/bin/pest --group=feature",
-    "test-unit": "php vendor/bin/pest --group=unit"
+    "migrate": "php vendor/bin/phinx migrate && php vendor/bin/phinx migrate -e test",
+    "tests": "php vendor/bin/pest",
+    "tests-feature": "php vendor/bin/pest --group=feature",
+    "tests-unit": "php vendor/bin/pest --group=unit"
   }
 }

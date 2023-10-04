@@ -61,7 +61,7 @@ services:
     arguments:
       $container: '@service_container'
       $projectRootPath: '%app.project_dir%'
-      $isDebugEnabled: '%app.debug%'
+
 
   App\Infrastructure\Adapter\Storage\ArraySheetsStorage: ~
   App\Infrastructure\Adapter\Storage\PgSqlSheetsStorage: ~
