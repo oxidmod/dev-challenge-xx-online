@@ -47,13 +47,13 @@ class PgSqlSheetsStorage implements ConnectionAwareInterface, SheetsStorageInter
             return [
                 'sheet_id' => $sheet->getId(),
                 'cell_id' => $cell->getId(),
-                'props' => json_encode(array_filter([
+                'props' => json_encode([
                     'contains_formula' => $cell->containsFormula(),
                     'value' => $cell->getValue(),
                     'parsed_value' => $cell->getParsedValue(),
                     'referenced_cell_ids' => $cell->getReferencedCellIds(),
                     'result' => $cell->hasResult() ? $cell->getResult() : null,
-                ])),
+                ]),
             ];
         }, $sheet->getCells());
 
